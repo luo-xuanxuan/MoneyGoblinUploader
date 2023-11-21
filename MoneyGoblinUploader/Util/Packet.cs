@@ -12,7 +12,7 @@ namespace MoneyGoblin.Utils
         [JsonProperty]
         public List<PacketRow> entries;
 
-        public unsafe Packet(ulong fcid, string player, string world, HousingWorkshopSubmersibleSubData * sub) {
+        public unsafe Packet(string fcid, string player, string world, HousingWorkshopSubmersibleSubData * sub) {
             this.entries = new List<PacketRow>();
             long unixTimeSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             foreach (HousingWorkshopSubmarineGathered s in sub->GatheredDataSpan)
@@ -44,7 +44,7 @@ namespace MoneyGoblin.Utils
         [JsonProperty]
         public long time;
         [JsonProperty]
-        public ulong fcid;
+        public string fcid;
         [JsonProperty]
         public string player;
         [JsonProperty]
@@ -58,7 +58,7 @@ namespace MoneyGoblin.Utils
         [JsonProperty]
         public ushort quantity;
 
-        public PacketRow(long time, ulong fcid, string player, string world, string sub, byte sector_id, uint item_id, ushort quantity)
+        public PacketRow(long time, string fcid, string player, string world, string sub, byte sector_id, uint item_id, ushort quantity)
         {
             this.time = time;
             this.fcid = fcid;

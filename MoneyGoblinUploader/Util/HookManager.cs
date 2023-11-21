@@ -77,7 +77,7 @@ public class HookManager
             var world = Plugin.ClientState.LocalPlayer.CurrentWorld.GameData.Name.ToString();
             var fc = (InfoProxyFreeCompany*)InfoModule.Instance()->GetInfoProxyById(InfoProxyId.FreeCompany);
             var fcName = Encoding.UTF8.GetString(fc->Name, 16).TrimEnd('\0');
-            var fcid = fc->ID;
+            var fcid = fc->ID.ToString();
 
             var p = new Packet(fcid, playerName, world, sub);
 
