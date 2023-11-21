@@ -1,0 +1,11 @@
+{
+    "Author": "Luo Xuanxuan",
+    "Name": "Money Goblin",
+    "Punchline": "Private Money Goblin Tracker.",
+    "Description": "$_$ i like money",
+    "InternalName": "MoneyGoblin",
+    "ApplicableVersion": "any",
+    "IconUrl": "./money_goblin.png",
+    "Tags": [
+    ]
+}
