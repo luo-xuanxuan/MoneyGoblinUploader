@@ -1,0 +1,21 @@
+[
+    {
+        "Author": "Luo Xuanxuan",
+        "Name": "Money Goblin",
+        "Punchline": "Private Money Goblin Tracker.",
+        "Description": "$_$ i like money",
+        "Tags": [],
+        "InternalName": "MoneyGoblin",
+        "AssemblyVersion": "1.0.0.0",
+        "TestingAssemblyVersion": "1.0.0.0",
+        "RepoUrl": "https://github.com/luo-xuanxuan/MoneyGoblinUploader/",
+        "ApplicableVersion": "any",
+        "DalamudApiLevel": 9,
+        "IsHide": "False",
+        "IsTestingExclusive": "false",
+        "LastUpdate": 0,
+        "DownloadLinkInstall": "https://github.com/luo-xuanxuan/MoneyGoblinUploader/raw/master/1.0.0.0.zip",
+        "DownloadLinkUpdate": "https://github.com/luo-xuanxuan/MoneyGoblinUploader/raw/master/1.0.0.0.zip",
+        "IconUrl": "https://github.com/luo-xuanxuan/MoneyGoblinUploader/raw/master/Data/money_goblin.png"
+    }
+]

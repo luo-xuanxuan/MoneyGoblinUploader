@@ -5,7 +5,6 @@
     "Description": "$_$ i like money",
     "InternalName": "MoneyGoblin",
     "ApplicableVersion": "any",
-    "IconUrl": "./money_goblin.png",
     "Tags": [
     ]
 }

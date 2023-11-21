@@ -69,7 +69,6 @@ namespace MoneyGoblin
 
         public unsafe void OnFrameworkUpdate(IFramework _)
         {
-            
             //debug = "";
 
             //PluginLog.Log($"Housing Manager: {(nint)HousingManager.Instance():X}");

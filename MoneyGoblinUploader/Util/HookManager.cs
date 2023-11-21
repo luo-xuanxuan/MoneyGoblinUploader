@@ -87,18 +87,8 @@ public class HookManager
             var content = new StringContent(p.getJSON(), Encoding.UTF8, "application/json");
             var cts = new CancellationTokenSource();
             cts.CancelAfter(60000); //60s
-            var debug_url = "http://127.0.0.1:8000/insert";
             var target_url = Plugin.Configuration.TargetAddress;
             client.PostAsync(target_url, content, cts.Token);
-            /*
-            foreach(PacketRow row in p.entries)
-            {
-                var content = new StringContent(row.getJSON(), Encoding.UTF8, "application/json");
-                var cts = new CancellationTokenSource();
-                cts.CancelAfter(60000); //60s
-                var debug_url = "http://127.0.0.1:8000/insert";
-                client.PostAsync(debug_url, content, cts.Token);
-            }*/
         }
         catch (Exception e)
         {
