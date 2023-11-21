@@ -16,6 +16,6 @@
         "LastUpdate": 0,
         "DownloadLinkInstall": "https://github.com/luo-xuanxuan/MoneyGoblinUploader/raw/master/1.0.0.0.zip",
         "DownloadLinkUpdate": "https://github.com/luo-xuanxuan/MoneyGoblinUploader/raw/master/1.0.0.0.zip",
-        "IconUrl": "https://github.com/luo-xuanxuan/MoneyGoblinUploader/raw/master/Data/money_goblin.png"
+        "IconUrl":"https://raw.githubusercontent.com/luo-xuanxuan/MoneyGoblinUploader/master/Data/money_goblin.png"
     }
 ]
