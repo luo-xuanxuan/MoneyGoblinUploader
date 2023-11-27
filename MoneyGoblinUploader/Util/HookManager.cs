@@ -13,6 +13,7 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
+using MoneyGoblinUploader.Utils;
 
 namespace MoneyGoblin.Utils;
 
@@ -77,18 +78,23 @@ public class HookManager
             var world = Plugin.ClientState.LocalPlayer.CurrentWorld.GameData.Name.ToString();
             var fc = (InfoProxyFreeCompany*)InfoModule.Instance()->GetInfoProxyById(InfoProxyId.FreeCompany);
             var fcName = Encoding.UTF8.GetString(fc->Name, 16).TrimEnd('\0');
-            string fcid = fc->ID.ToString("D");
+            string fcid = fc->ID.ToString();
 
-            var p = new Packet(fcid, playerName, world, sub);
+            int sub_id = -1;
 
+            for(int i = 0; i < 4; i++)
+            {
+                if(instance->WorkshopTerritory->Submersible.DataPointerListSpan[i].Value->RegisterTime == sub->RegisterTime)
+                {
+                    sub_id = i;
+                    break;
+                }
+            }
 
-            var client = new HttpClient();
+            var p = new Packet(fcid, playerName, world, sub, sub_id);
 
-            var content = new StringContent(p.getJSON(), Encoding.UTF8, "application/json");
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(60000); //60s
-            var target_url = Plugin.Configuration.TargetAddress;
-            client.PostAsync(target_url, content, cts.Token);
+            Upload.PostJson(p.getJSON(), Plugin.Configuration.TargetAddress);
+
         }
         catch (Exception e)
         {

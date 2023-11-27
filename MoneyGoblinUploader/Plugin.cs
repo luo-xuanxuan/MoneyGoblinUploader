@@ -6,12 +6,23 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using MoneyGoblin.Windows;
 using MoneyGoblin.Utils;
+using MoneyGoblin.IPC;
+using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+using Lumina.Excel;
+using Lumina.Excel.GeneratedSheets;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using FFXIVClientStructs.FFXIV.Client.UI.Info;
+using MoneyGoblinUploader.Utils;
+using System;
 
 namespace MoneyGoblin
 {
     public class Plugin : IDalamudPlugin
     {
         public string Name => "Money Goblin";
+        [PluginService] public static IDataManager Data { get; private set; } = null!;
         [PluginService] public static IFramework Framework { get; private set; } = null!;
         [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
         [PluginService] public static IClientState ClientState { get; private set; } = null!;
@@ -27,12 +38,18 @@ namespace MoneyGoblin
         public const string Authors = "Luo";
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
+        private static ExcelSheet<TerritoryType> TerritoryTypes = null!;
+
         public static HookManager HookManager = null!;
+        public static AllaganToolsConsumer AllaganToolsConsumer = null!;
+
+        public static uint[] ReturnTime = new uint[4] { 0, 0, 0, 0 };
 
         public Plugin()
         {
 
             HookManager = new HookManager(this);
+            AllaganToolsConsumer = new AllaganToolsConsumer(this);
 
 
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -44,6 +61,8 @@ namespace MoneyGoblin
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += OpenConfig;
 
+            TerritoryTypes = Data.GetExcelSheet<TerritoryType>()!;
+
             Framework.Update += OnFrameworkUpdate;
         }
 
@@ -53,6 +72,7 @@ namespace MoneyGoblin
             
             ConfigWindow.Dispose();
             HookManager.Dispose();
+            AllaganToolsConsumer.Unsubscribe();
 
             PluginInterface.UiBuilder.Draw -= DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi -= OpenConfig;
@@ -69,18 +89,45 @@ namespace MoneyGoblin
 
         public unsafe void OnFrameworkUpdate(IFramework _)
         {
-            //debug = "";
 
-            //PluginLog.Log($"Housing Manager: {(nint)HousingManager.Instance():X}");
-            //var info = InfoModule.Instance();
-            //var fc = (InfoProxyFreeCompany*)info->GetInfoProxyById(InfoProxyId.FreeCompany);
-            //var playerAddress = Plugin.ClientState.LocalPlayer.Address;
-            //var party = (InfoProxyParty*)info->GetInfoProxyById(InfoProxyId.Party);
-            //var id = party->InfoProxyCommonList.CharDataSpan[0].ContentId;
-            //var id = info->LocalContentId;
-            //Plugin.Log.Information(fc->ID.ToString()); //lodestone fc id
-            //Plugin.Log.Information($"Local Player: {(nint)playerAddress:X}");
-            //Plugin.Log.Information($"Local Player: {id}");
+            if (Plugin.ClientState.LocalPlayer == null) //Check if player exists
+            {
+                ReturnTime = new uint[4] { 0, 0, 0, 0 }; //reset timer cache if no player
+                return;
+            }
+
+            HousingWorkshopTerritory* WorkshopTerritory = HousingManager.Instance()->WorkshopTerritory;
+            if (WorkshopTerritory == null) //Check if workshop exists
+                return;
+
+            if (TerritoryTypes.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse == 49) //Check if we're in IS instead
+                return;
+
+            IntPtr submersiblePtr = new IntPtr(WorkshopTerritory->Submersible.DataPointerListSpan[0]);
+            if (submersiblePtr == IntPtr.Zero) //check if subs loaded yet
+                return;
+
+            //check for sub data
+            for (int i = 0; i < 4; i++)
+            {
+                HousingWorkshopSubmersibleSubData* sub = WorkshopTerritory->Submersible.DataPointerListSpan[i];
+
+                if(sub->ReturnTime != ReturnTime[i])
+                {
+                    uint rt = sub->ReturnTime;
+
+                    var fc = (InfoProxyFreeCompany*)InfoModule.Instance()->GetInfoProxyById(InfoProxyId.FreeCompany);
+                    string fcid = fc->ID.ToString();
+
+                    ReturnTimePacket p = new ReturnTimePacket(sub->ReturnTime, fcid, Encoding.UTF8.GetString(sub->Name, 20).TrimEnd('\0'), i);
+
+                    Upload.PostJson(p.getJSON(), this.Configuration.TargetAddress, "returns");
+                    ReturnTime[i] = rt;
+                }
+
+                
+            }
+            
         }
     }
 }
