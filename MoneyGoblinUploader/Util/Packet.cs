@@ -1,4 +1,4 @@
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace MoneyGoblin.Utils
         public unsafe Packet(string fcid, string player, string world, HousingWorkshopSubmersibleSubData * sub, int sub_id) {
             this.entries = new List<PacketRow>();
             long unixTimeSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            foreach (HousingWorkshopSubmarineGathered s in sub->GatheredDataSpan)
+            foreach (HousingWorkshopSubmarineGathered s in sub->GatheredData)
             {
                 if (s.Point == 0)
                     break;

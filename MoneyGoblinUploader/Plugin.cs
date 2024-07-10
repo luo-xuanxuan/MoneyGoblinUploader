@@ -7,15 +7,13 @@ using Dalamud.Plugin.Services;
 using MoneyGoblin.Windows;
 using MoneyGoblin.Utils;
 using MoneyGoblin.IPC;
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
-using System.Net.Http;
 using System.Text;
-using System.Threading;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using MoneyGoblinUploader.Utils;
 using System;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace MoneyGoblin
 {
@@ -24,7 +22,7 @@ namespace MoneyGoblin
         public string Name => "Money Goblin";
         [PluginService] public static IDataManager Data { get; private set; } = null!;
         [PluginService] public static IFramework Framework { get; private set; } = null!;
-        [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
+        [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
         [PluginService] public static IClientState ClientState { get; private set; } = null!;
         [PluginService] public static ISigScanner SigScanner { get; private set; } = null!;
         [PluginService] public static IGameInteropProvider Hook { get; private set; } = null!;
@@ -96,30 +94,32 @@ namespace MoneyGoblin
                 return;
             }
 
-            HousingWorkshopTerritory* WorkshopTerritory = HousingManager.Instance()->WorkshopTerritory;
+            WorkshopTerritory* WorkshopTerritory = HousingManager.Instance()->WorkshopTerritory;
             if (WorkshopTerritory == null) //Check if workshop exists
                 return;
 
             if (TerritoryTypes.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse == 49) //Check if we're in IS instead
                 return;
 
-            IntPtr submersiblePtr = new IntPtr(WorkshopTerritory->Submersible.DataPointerListSpan[0]);
+            IntPtr submersiblePtr = new IntPtr(WorkshopTerritory->Submersible.DataPointers[0]);
             if (submersiblePtr == IntPtr.Zero) //check if subs loaded yet
                 return;
 
             //check for sub data
             for (int i = 0; i < 4; i++)
             {
-                HousingWorkshopSubmersibleSubData* sub = WorkshopTerritory->Submersible.DataPointerListSpan[i];
+                HousingWorkshopSubmersibleSubData* sub = WorkshopTerritory->Submersible.DataPointers[i];
 
-                if(sub->ReturnTime != ReturnTime[i])
+                if (sub->ReturnTime != ReturnTime[i])
                 {
                     uint rt = sub->ReturnTime;
 
                     var fc = (InfoProxyFreeCompany*)InfoModule.Instance()->GetInfoProxyById(InfoProxyId.FreeCompany);
-                    string fcid = fc->ID.ToString();
+                    string fcid = fc->Id.ToString();
 
-                    ReturnTimePacket p = new ReturnTimePacket(sub->ReturnTime, fcid, Encoding.UTF8.GetString(sub->Name, 20).TrimEnd('\0'), i);
+                    ReadOnlySpan<byte> nameSpan = sub->Name.Slice(0, 20);
+
+                    ReturnTimePacket p = new ReturnTimePacket(sub->ReturnTime, fcid, Encoding.UTF8.GetString(nameSpan).TrimEnd('\0'), i);
 
                     Upload.PostJson(p.getJSON(), this.Configuration.TargetAddress, "returns");
                     ReturnTime[i] = rt;

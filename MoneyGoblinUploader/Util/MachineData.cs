@@ -1,4 +1,3 @@
-using FFXIVClientStructs.Interop.Attributes;
 using FFXIVClientStructs.Interop;
 using System;
 using System.Runtime.InteropServices;
@@ -9,7 +8,7 @@ namespace MoneyGoblinUploader.Util
     [StructLayout(LayoutKind.Explicit, Size = 0xB8C0)]
     public unsafe partial struct HousingWorkshopTerritory
     {
-        [FixedSizeArray<AirshipData>(4)]
+        //[FixedSizeArray<AirshipData>(4)]
         [FieldOffset(0x68)] public fixed byte AirshipDataList[0x1C0 * 4];
 
         [FieldOffset(0x7D8)] public byte ActiveAirshipId; // 0-3, 255 if none
@@ -18,14 +17,14 @@ namespace MoneyGoblinUploader.Util
         [FieldOffset(0x2950)] public fixed byte AishipUnlockedSectorFlags[0x4];
         [FieldOffset(0x2954)] public fixed byte AishipExploredSectorFlags[0x4];
 
-        [FixedSizeArray<SubmersibleData>(4)]
+        //[FixedSizeArray<SubmersibleData>(4)]
         [FieldOffset(0x2960)] public fixed byte SubmersibleDataList[0x2320 * 4];
 
-        [FixedSizeArray<Pointer<SubmersibleData>>(5)]
+        //[FixedSizeArray<Pointer<SubmersibleData>>(5)]
         [FieldOffset(0xB5E0)] public fixed byte SubmersibleDataPointerList[0x8 * 5]; // 0-3 is the same as SubmersibleDataList, 4 is the one you are currently using
         [FieldOffset(0xB6F9)] public fixed byte SubmersibleUnlockedSectorFlags[0xB];
         [FieldOffset(0xB708)] public fixed byte SubmersibleExploredSectorFlags[0xB];
-        public Span<SubmersibleData> SubmersibleList => new(Unsafe.AsPointer(ref SubmersibleDataList[0]), 4);
+        //public Span<SubmersibleData> SubmersibleList => new(Unsafe.AsPointer(ref SubmersibleDataList[0]), 4);
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 0x1C0)]
@@ -56,8 +55,8 @@ namespace MoneyGoblinUploader.Util
         [FieldOffset(0x50)] public ushort LogRating;
         [FieldOffset(0x52)] public ushort VoyageSpeed; //? Might update to current speed, weird value
 
-        [FixedSizeArray<AirshipSectorData>(5)]
-        [FieldOffset(0x54)] public fixed byte VoyageSectorData[0x38 * 5];
+        //[FixedSizeArray<AirshipSectorData>(5)]
+        //[FieldOffset(0x54)] public fixed byte VoyageSectorData[0x38 * 5];
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 0x38)]
@@ -112,10 +111,10 @@ namespace MoneyGoblinUploader.Util
         [FieldOffset(0x5A)] public ushort RangeBonus;
         [FieldOffset(0x5C)] public ushort FavorBonus;
 
-        [FixedSizeArray<SubmersibleSectorData>(5)]
-        [FieldOffset(0x64)] public fixed byte VoyageSectorData[0x38 * 5];
+        //[FixedSizeArray<SubmersibleSectorData>(5)]
+        //[FieldOffset(0x64)] public fixed byte VoyageSectorData[0x38 * 5];
 
-        public Span<SubmersibleSectorData> VoyageSectors => new(Unsafe.AsPointer(ref VoyageSectorData[0]), 5);
+        //public Span<SubmersibleSectorData> VoyageSectors => new(Unsafe.AsPointer(ref VoyageSectorData[0]), 5);
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 0x38)]

@@ -99,7 +99,7 @@ public class AllaganToolsConsumer
 
         int inventory_type = -1;
         var fc = (InfoProxyFreeCompany*)InfoModule.Instance()->GetInfoProxyById(InfoProxyId.FreeCompany);
-        var fcid = fc->ID;
+        var fcid = fc->Id;
 
         if (ItemChanged.CharacterId == Plugin.ClientState.LocalContentId)
             inventory_type = 0;

@@ -9,7 +9,7 @@ namespace MoneyGoblinUploader.Util
 
         public UploaderVersionPacket()
         {
-            Version = "0.3.3-alpha";
+            Version = "0.3.4-alpha";
         }
 
         public string getJSONString()

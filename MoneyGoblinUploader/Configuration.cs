@@ -4,6 +4,7 @@ using Dalamud.Plugin;
 using Newtonsoft.Json;
 using System;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 
 namespace MoneyGoblin
 {
@@ -14,9 +15,11 @@ namespace MoneyGoblin
 
         public string TargetAddress { get; set; } = "";
 
+        public IPluginLog Log { get; set; }
+
         public void Save()
         {
-            PluginLog.Information("Saving to: " + Plugin.PluginInterface.ConfigFile.FullName);
+            Log.Information("Saving to: %s", Plugin.PluginInterface.ConfigFile.FullName);
             WriteAllTextSafe(Plugin.PluginInterface.ConfigFile.FullName, JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
             {
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,

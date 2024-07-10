@@ -1,3 +1,4 @@
+using FFXIVClientStructs.FFXIV.Client.Game;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -100,7 +101,7 @@ namespace MoneyGoblinUploader.Util
         [JsonProperty]
         public List<VoyageSectorData> Log;
 
-        public unsafe VoyageLogData(SubmersibleData submersibleData)
+        public unsafe VoyageLogData(HousingWorkshopSubmersibleSubData submersibleData)
         {
             LuminaHelper lumina = new LuminaHelper();
 
@@ -111,9 +112,9 @@ namespace MoneyGoblinUploader.Util
             for (int i = 0; i < 5; i++)
             {
 
-                if (submersibleData.VoyageSectors[i].SectorId != 0)
+                if (submersibleData.GatheredData[i].Point != 0)
                 {
-                    VoyageSectorData sector = new VoyageSectorData(submersibleData.VoyageSectors[i]);
+                    VoyageSectorData sector = new VoyageSectorData(submersibleData.GatheredData[i]);
                     experienceGained += sector.Experience;
                     this.Log.Add(sector);
                     continue;
@@ -121,7 +122,7 @@ namespace MoneyGoblinUploader.Util
                 break;
             }
 
-            if((int)submersibleData.Experience - experienceGained < 0)
+            if((int)submersibleData.CurrentExp - experienceGained < 0)
             {
                 var rankStats = lumina.getStatsByRank(submersibleData.RankId - 1);
                 this.Surveillance = rankStats.Surveillance + submersibleData.SurveillanceBase;
@@ -174,26 +175,23 @@ namespace MoneyGoblinUploader.Util
         [JsonProperty]
         public List<DipData> DipData;
 
-        public unsafe VoyageSectorData(SubmersibleSectorData sector)
+        public unsafe VoyageSectorData(HousingWorkshopSubmarineGathered sector)
         {
             this.DipData = new List<DipData>();
-            this.SectorId = sector.SectorId;
-            this.ExperienceRating = sector.ExperienceRating;
-            this.DiscoveredSectorId = sector.DiscoveredSectorId;
-            this.IsFirstTimeExplored = sector.IsFirstTimeExplored != 0;
-            this.UnlockedSubmarine = sector.UnlockedSubmarine;
-            this.IsDoubleDip = sector.IsDoubleDip != 0;
-            this.FavorResult = (int)sector.FavorResult;
-            this.Experience = (int)sector.Experience;
-            for (int j = 0; j < 2; j++)
+            this.SectorId = sector.Point;
+            this.ExperienceRating = ((int)sector.PointRating);
+            this.DiscoveredSectorId = sector.UnlockedPoint;
+            this.IsFirstTimeExplored = sector.FirstExploration;
+            this.UnlockedSubmarine = 0;
+            this.IsDoubleDip = sector.DoubleDip;
+            this.FavorResult = (int)sector.FavorLine;
+            this.Experience = (int)sector.ExpGained;
+            DipData dip = new DipData((int)sector.ItemIdPrimary, sector.ItemCountPrimary, sector.ItemHQPrimary, sector.UnknownPrimary == 1, (int)sector.SurveyLinePrimary, (int)sector.YieldLinePrimary, (int)sector.DiscoveredLinePrimary);
+            this.DipData.Add(dip);
+            if((int)sector.ItemIdAdditional != 0)
             {
-                if (sector.ItemId[j] != 0)
-                {
-                    DipData dip = new DipData(sector, j);
-                    this.DipData.Add(dip);
-                    continue;
-                }
-                break;
+                DipData dip2 = new DipData((int)sector.ItemIdAdditional, sector.ItemCountAdditional, sector.ItemHQAdditional, sector.UnknownAdditional == 1, (int)sector.SurveyLineAdditional, (int)sector.YieldLineAdditional, (int)sector.DiscoveredLineAdditional);
+                this.DipData.Add(dip2);
             }
         }
 
@@ -374,15 +372,15 @@ namespace MoneyGoblinUploader.Util
         [JsonProperty]
         public int QualityResult;
 
-        public unsafe DipData(SubmersibleSectorData sectorData, int i)
+        public unsafe DipData(int id, int quantity, bool ishq, bool nott3, int surv, int ret, int quality)
         {
-            this.ItemId = (int)sectorData.ItemId[i];
-            this.Quantity = (int)sectorData.Quantity[i];
-            this.IsHq = sectorData.isHQ[i] != 0;
-            this.IsNotTier3 = sectorData.isNotTier3[i] != 0;
-            this.SurveillanceResult = (int)sectorData.SurveillanceResult[i];
-            this.RetrievalResult = (int)sectorData.RetrievalResult[i];
-            this.QualityResult = (int)sectorData.QualityResult[i];
+            this.ItemId = id;
+            this.Quantity = quantity;
+            this.IsHq = ishq;
+            this.IsNotTier3 = nott3;
+            this.SurveillanceResult = surv;
+            this.RetrievalResult = ret;
+            this.QualityResult = quality;
         }
     }
 }

@@ -1,17 +1,7 @@
 using System;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using System.Text;
-using System.Threading;
-using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Hooking;
-using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using MoneyGoblinUploader.Utils;
 
@@ -68,7 +58,7 @@ public class HookManager
             if (instance == null || instance->WorkshopTerritory == null)
                 return;
 
-            var current = instance->WorkshopTerritory->Submersible.DataPointerListSpan[4];
+            var current = instance->WorkshopTerritory->Submersible.DataPointers[4];
             if (current.Value == null)
                 return;
 
@@ -77,14 +67,15 @@ public class HookManager
             var playerName = Plugin.ClientState.LocalPlayer.Name.ToString();
             var world = Plugin.ClientState.LocalPlayer.CurrentWorld.GameData.Name.ToString();
             var fc = (InfoProxyFreeCompany*)InfoModule.Instance()->GetInfoProxyById(InfoProxyId.FreeCompany);
-            var fcName = Encoding.UTF8.GetString(fc->Name, 16).TrimEnd('\0');
-            string fcid = fc->ID.ToString();
+            ReadOnlySpan<byte> nameSpan = fc->Name.Slice(0, 16);
+            var fcName = Encoding.UTF8.GetString(nameSpan).TrimEnd('\0');
+            string fcid = fc->Id.ToString();
 
             int sub_id = -1;
 
             for(int i = 0; i < 4; i++)
             {
-                if(instance->WorkshopTerritory->Submersible.DataPointerListSpan[i].Value->RegisterTime == sub->RegisterTime)
+                if(instance->WorkshopTerritory->Submersible.DataPointers[i].Value->RegisterTime == sub->RegisterTime)
                 {
                     sub_id = i;
                     break;
