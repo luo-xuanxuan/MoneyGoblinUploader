@@ -8,7 +8,7 @@
         "AssemblyVersion": "1.0.0.5",
         "RepoUrl": "https://github.com/luo-xuanxuan/MoneyGoblinUploader/",
         "ApplicableVersion": "any",
-        "DalamudApiLevel": 10,
+        "DalamudApiLevel": 11,
         "IconUrl": "https://raw.githubusercontent.com/luo-xuanxuan/MoneyGoblinUploader/master/Data/money_goblin.png",
         "ImageUrls": [],
         "DownloadLinkInstall": "https://github.com/luo-xuanxuan/MoneyGoblinUploader/releases/download/1.0.0.5/latest.zip",
