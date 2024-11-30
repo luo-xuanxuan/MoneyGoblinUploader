@@ -65,7 +65,8 @@ public class HookManager
             var sub = current.Value;
 
             var playerName = Plugin.ClientState.LocalPlayer.Name.ToString();
-            var world = Plugin.ClientState.LocalPlayer.CurrentWorld.GameData.Name.ToString();
+            var world = Plugin.ClientState.LocalPlayer.CurrentWorld.Value.Name.ToString();
+            //var world = Plugin.ClientState.LocalPlayer.CurrentWorld.GameData.Name.ToString();
             var fc = (InfoProxyFreeCompany*)InfoModule.Instance()->GetInfoProxyById(InfoProxyId.FreeCompany);
             ReadOnlySpan<byte> nameSpan = fc->Name.Slice(0, 16);
             var fcName = Encoding.UTF8.GetString(nameSpan).TrimEnd('\0');

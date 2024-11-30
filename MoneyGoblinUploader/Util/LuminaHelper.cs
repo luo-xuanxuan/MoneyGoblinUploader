@@ -1,4 +1,4 @@
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace MoneyGoblinUploader.Util
 {
@@ -16,7 +16,7 @@ namespace MoneyGoblinUploader.Util
         {
             var itemSheet = gameData.GetExcelSheet<Item>();
             var itemRow = itemSheet.GetRow((uint)id);
-            return itemRow.Name;
+            return itemRow.Name.ToString();
         }
 
         public (ushort Surveillance, ushort Retrieval, ushort Speed, ushort Range, ushort Favor) getStatsByRank(int rank)

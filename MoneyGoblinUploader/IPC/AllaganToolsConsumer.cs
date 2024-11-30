@@ -111,7 +111,8 @@ public class AllaganToolsConsumer
             return; //idk retainer prolly? Not gonna cover this case rn
 
         var playerName = Plugin.ClientState.LocalPlayer.Name.ToString();
-        var world = Plugin.ClientState.LocalPlayer.CurrentWorld.GameData.Name.ToString();
+        var world = Plugin.ClientState.LocalPlayer.CurrentWorld.Value.Name.ToString();
+        //var world = Plugin.ClientState.LocalPlayer.CurrentWorld.GameData.Name.ToString();
 
         ResourcePacket p = new ResourcePacket(inventory_type, GetCount(10155, ItemChanged.CharacterId), GetCount(10373, ItemChanged.CharacterId), playerName, world, fcid.ToString());
 

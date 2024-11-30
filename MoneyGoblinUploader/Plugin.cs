@@ -8,7 +8,7 @@ using MoneyGoblin.Windows;
 using MoneyGoblin.Utils;
 using MoneyGoblin.IPC;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using System.Text;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using MoneyGoblinUploader.Utils;
@@ -98,7 +98,7 @@ namespace MoneyGoblin
             if (WorkshopTerritory == null) //Check if workshop exists
                 return;
 
-            if (TerritoryTypes.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse == 49) //Check if we're in IS instead
+            if (TerritoryTypes.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse.Value.RowId == 49) //Check if we're in IS instead
                 return;
 
             IntPtr submersiblePtr = new IntPtr(WorkshopTerritory->Submersible.DataPointers[0]);
