@@ -94,6 +94,14 @@ namespace MoneyGoblin
                 return;
             }
 
+            var fc = (InfoProxyFreeCompany*)InfoModule.Instance()->GetInfoProxyById(InfoProxyId.FreeCompany);
+            string fcid = fc->Id.ToString();
+
+            //GilMonitor
+            //Plugin.Log.Info(Plugin.ClientState.LocalContentId.ToString());
+            AllaganToolsConsumer.GilMonitor(Plugin.ClientState.LocalContentId);
+            AllaganToolsConsumer.GilMonitor(fc->Id);
+
             WorkshopTerritory* WorkshopTerritory = HousingManager.Instance()->WorkshopTerritory;
             if (WorkshopTerritory == null) //Check if workshop exists
                 return;
@@ -114,9 +122,6 @@ namespace MoneyGoblin
                 {
                     uint rt = sub->ReturnTime;
 
-                    var fc = (InfoProxyFreeCompany*)InfoModule.Instance()->GetInfoProxyById(InfoProxyId.FreeCompany);
-                    string fcid = fc->Id.ToString();
-
                     ReadOnlySpan<byte> nameSpan = sub->Name.Slice(0, 20);
 
                     ReturnTimePacket p = new ReturnTimePacket(sub->ReturnTime, fcid, Encoding.UTF8.GetString(nameSpan).TrimEnd('\0'), i);
@@ -124,8 +129,6 @@ namespace MoneyGoblin
                     Upload.PostJson(p.getJSON(), this.Configuration.TargetAddress, "returns");
                     ReturnTime[i] = rt;
                 }
-
-                
             }
             
         }

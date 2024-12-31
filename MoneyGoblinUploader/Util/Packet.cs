@@ -86,17 +86,20 @@ namespace MoneyGoblin.Utils
         [JsonProperty]
         public uint repairs;
         [JsonProperty]
+        public uint gil;
+        [JsonProperty]
         public string player;
         [JsonProperty]
         public string world;
         [JsonProperty]
         public string fcid;
 
-        public ResourcePacket(int inventory, uint tanks, uint repairs, string player, string world, string fcid)
+        public ResourcePacket(int inventory, uint tanks, uint repairs,uint gil, string player, string world, string fcid)
         {
             this.inventory = inventory;
             this.tanks = tanks;
             this.repairs = repairs;
+            this.gil = gil;
             this.player = player;
             this.world = world;
             this.fcid = fcid;

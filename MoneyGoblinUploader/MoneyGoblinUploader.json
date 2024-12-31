@@ -5,6 +5,7 @@
     "Description": "$_$ i like money",
     "InternalName": "MoneyGoblin",
     "ApplicableVersion": "any",
+    "DalamudApiLevel": 11,
     "Tags": [
     ]
 }
